@@ -30,7 +30,7 @@ const TopBar: React.FC<TopBarProps> = ({
   if (isMetaMaskInstalled && !address) {
     connectButton = (
       <Button className="button" color="inherit" onClick={initialSigner}>
-        Connect to MetaMsk
+        Connect to MetaMask
       </Button>
     );
   } else if (!isMetaMaskInstalled) {
