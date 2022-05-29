@@ -1,4 +1,6 @@
+import React from "react";
 import { Button, LinearProgress, Card } from "@mui/material";
+import BigNumber from "bignumber.js";
 import styled from "styled-components";
 import { Formik, Form, Field } from "formik";
 import { TextField } from "formik-mui";
@@ -18,7 +20,12 @@ interface Values {
   amount: string;
 }
 
-const TransferForm = () => {
+interface TransferFormProps {
+  balance?: ethers.BigNumber;
+  isConnected: boolean;
+}
+
+const TransferForm: React.FC<TransferFormProps> = ({ balance }) => {
   return (
     <StyledFormContainer>
       <Formik
@@ -36,6 +43,21 @@ const TransferForm = () => {
               ethers.utils.getAddress(values.receipentAddress);
             } catch (e) {
               errors.receipentAddress = "the address is invalid";
+            }
+          }
+          if (values.amount && balance) {
+            let bigNumberAmount;
+            try {
+              bigNumberAmount = ethers.utils.parseEther(
+                new BigNumber(values.amount).toFixed()
+              );
+            } catch (e: any) {
+              // TODO fractional component exceeds decimals
+              errors.amount = e.message;
+            }
+            if (bigNumberAmount?.gte(balance)) {
+              errors.amount =
+                "The transfer amount should be smaller than the balance";
             }
           }
           return errors;

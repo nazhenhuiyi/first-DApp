@@ -10,6 +10,8 @@ export function useConnectMetaMask() {
   const signerRef = useRef<JsonRpcSigner | null>(null);
   const [address, setAddress] = useState("");
   const [balance, setBalance] = useState("");
+  const [bigNumBalance, setBigNumBalance] = useState<ethers.BigNumber | undefined>();
+
 
   if (!providerRef.current) {
     providerRef.current = new ethers.providers.Web3Provider(window.ethereum);
@@ -33,6 +35,7 @@ export function useConnectMetaMask() {
       const balance = await providerRef.current.getBalance(address);
       setAddress(address);
       setBalance(ethers.utils.commify(ethers.utils.formatEther(balance)));
+      setBigNumBalance(balance);
     } catch (error) {
       console.error(error);
     }
@@ -48,5 +51,6 @@ export function useConnectMetaMask() {
     balance,
     isMetaMaskInstalled,
     initialSigner,
+    bigNumBalance
   };
 }
