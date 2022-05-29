@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { useMemo } from "react";
-import styled from 'styled-components';
+import styled from "styled-components";
 const StyledAppBar = styled(AppBar)`
   .address {
     margin-left: auto;
@@ -10,7 +10,10 @@ const StyledAppBar = styled(AppBar)`
     text-overflow: ellipsis;
     overflow: hidden;
   }
-`
+  .button {
+    margin-left: auto;
+  }
+`;
 interface TopBarProps {
   address?: string;
   balance?: string;
@@ -26,12 +29,16 @@ const TopBar: React.FC<TopBarProps> = ({
   let connectButton;
   if (isMetaMaskInstalled && !address) {
     connectButton = (
-      <Button color="inherit" onClick={initialSigner}>
-        Connect MetaMsk
+      <Button className="button" color="inherit" onClick={initialSigner}>
+        Connect to MetaMsk
       </Button>
     );
   } else if (!isMetaMaskInstalled) {
-    connectButton = <Button color="inherit">Please install MetaMask</Button>;
+    connectButton = (
+      <Button className="button" color="inherit">
+        Please install MetaMask
+      </Button>
+    );
   }
   const fixedBalance = useMemo(() => {
     if (balance) {
