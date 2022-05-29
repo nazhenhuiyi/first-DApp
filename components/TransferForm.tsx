@@ -2,6 +2,7 @@ import { Button, LinearProgress, Card } from "@mui/material";
 import styled from "styled-components";
 import { Formik, Form, Field } from "formik";
 import { TextField } from "formik-mui";
+import { ethers } from "ethers";
 
 const StyledFormContainer = styled(Card)`
   max-width: 500px;
@@ -12,6 +13,11 @@ const StyledFormContainer = styled(Card)`
   }
 `;
 
+interface Values {
+  receipentAddress: string;
+  amount: string;
+}
+
 const TransferForm = () => {
   return (
     <StyledFormContainer>
@@ -20,8 +26,19 @@ const TransferForm = () => {
           receipentAddress: "",
           amount: "",
         }}
-        validate={(values) => {
-          return {};
+        validate={(values: Values) => {
+          const errors = {
+            receipentAddress: "",
+            amount: "",
+          };
+          if (values.receipentAddress) {
+            try {
+              ethers.utils.getAddress(values.receipentAddress);
+            } catch (e) {
+              errors.receipentAddress = "the address is invalid";
+            }
+          }
+          return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
@@ -29,6 +46,8 @@ const TransferForm = () => {
             alert(JSON.stringify(values, null, 2));
           }, 500);
         }}
+        validateOnChange={false}
+        validateOnBlur
       >
         {({ submitForm, isSubmitting }) => (
           <Form>
@@ -37,7 +56,7 @@ const TransferForm = () => {
               name="receipentAddress"
               type="text"
               label="Receipent address"
-              placeholder="Public address (0x), or ENS"
+              placeholder="Please enter Public address (0x)"
               fullWidth
             />
             <Field
