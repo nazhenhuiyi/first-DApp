@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Formik, Form, Field } from "formik";
 import { TextField } from "formik-mui";
 import { ethers } from "ethers";
+import { JsonRpcSigner } from "@ethersproject/providers";
 
 const StyledFormContainer = styled(Card)`
   max-width: 500px;
@@ -23,9 +24,10 @@ interface Values {
 interface TransferFormProps {
   balance?: ethers.BigNumber;
   isConnected: boolean;
+  signer: JsonRpcSigner | null;
 }
 
-const TransferForm: React.FC<TransferFormProps> = ({ balance }) => {
+const TransferForm: React.FC<TransferFormProps> = ({ balance, signer }) => {
   return (
     <StyledFormContainer>
       <Formik
@@ -62,11 +64,19 @@ const TransferForm: React.FC<TransferFormProps> = ({ balance }) => {
           }
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            setSubmitting(false);
-            alert(JSON.stringify(values, null, 2));
-          }, 500);
+        onSubmit={async (values: Values, { setSubmitting, resetForm }) => {
+            try {
+              await signer?.sendTransaction({
+                to: values.receipentAddress,
+                value: ethers.utils.parseEther(new BigNumber(values.amount).toFixed()),
+              });
+              resetForm();
+              // TODO suceess tip
+            } catch (e) {
+              // TODO error tip
+            } finally {
+              setSubmitting(false);
+            }
         }}
         validateOnChange={false}
         validateOnBlur
