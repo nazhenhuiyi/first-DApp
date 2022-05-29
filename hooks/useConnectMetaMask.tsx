@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ethers } from "ethers";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { useSnackbar } from "notistack";
 
 export function useConnectMetaMask() {
   const isMetaMaskInstalled = !!window.ethereum;
-  const isConnected = window.ethereum.isConnected();
+  const { enqueueSnackbar } = useSnackbar()
 
   const providerRef = useRef<Web3Provider | null>(null);
   const signerRef = useRef<JsonRpcSigner | null>(null);
@@ -25,7 +26,7 @@ export function useConnectMetaMask() {
       try {
       await providerRef.current.send("eth_requestAccounts", []);
       } catch(e: any) {
-        alert(e.message);
+        enqueueSnackbar(e.message, { variant: 'error' })
         return;
       }
     }
