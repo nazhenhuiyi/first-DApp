@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ethers } from "ethers";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
-
+import BigNumber from "bignumber.js";
 export function useConnectMetaMask() {
   const isMetaMaskInstalled = !!window.ethereum;
   const isConnected = window.ethereum.isConnected();
