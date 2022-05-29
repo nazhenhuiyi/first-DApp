@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, LinearProgress, Card } from "@mui/material";
+import { Button, LinearProgress, Card, Typography } from "@mui/material";
 import BigNumber from "bignumber.js";
 import styled from "styled-components";
 import { Formik, Form, Field } from "formik";
@@ -10,9 +10,12 @@ import { JsonRpcSigner } from "@ethersproject/providers";
 const StyledFormContainer = styled(Card)`
   max-width: 500px;
   padding: 16px;
-  margin: 20px auto 0;
+  margin: 30px auto 0;
   .MuiFormControl-root {
     margin-bottom: 12px;
+  }
+  .title {
+    margin-bottom: 20px;
   }
 `;
 
@@ -29,7 +32,8 @@ interface TransferFormProps {
 
 const TransferForm: React.FC<TransferFormProps> = ({ balance, signer, isConnected }) => {
   return (
-    <StyledFormContainer>
+    <StyledFormContainer elevation={6}>
+      <Typography variant="h4" className="title">Transfer Ether</Typography>
       <Formik
         initialValues={{
           receipentAddress: "",
