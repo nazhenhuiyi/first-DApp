@@ -40,9 +40,7 @@ const TransferForm: React.FC<TransferFormProps> = ({ balance, signer, isConnecte
           amount: "",
         }}
         validate={(values: Values) => {
-          const errors = {
-            receipentAddress: "",
-            amount: "",
+          const errors: { amount?: string; receipentAddress?: string;} = {
           };
           if (values.receipentAddress) {
             try {
