@@ -6,6 +6,7 @@ import { Formik, Form, Field } from "formik";
 import { TextField } from "formik-mui";
 import { ethers } from "ethers";
 import { JsonRpcSigner } from "@ethersproject/providers";
+import { useSnackbar } from "notistack";
 
 const StyledFormContainer = styled(Card)`
   max-width: 500px;
@@ -30,18 +31,25 @@ interface TransferFormProps {
   signer: JsonRpcSigner | null;
 }
 
-const TransferForm: React.FC<TransferFormProps> = ({ balance, signer, isConnected }) => {
+const TransferForm: React.FC<TransferFormProps> = ({
+  balance,
+  signer,
+  isConnected,
+}) => {
+  const { enqueueSnackbar } = useSnackbar();
+
   return (
     <StyledFormContainer elevation={6}>
-      <Typography variant="h5" className="title">Transfer Ether</Typography>
+      <Typography variant="h5" className="title">
+        Transfer Ether
+      </Typography>
       <Formik
         initialValues={{
           receipentAddress: "",
           amount: "",
         }}
         validate={(values: Values) => {
-          const errors: { amount?: string; receipentAddress?: string;} = {
-          };
+          const errors: { amount?: string; receipentAddress?: string } = {};
           if (values.receipentAddress) {
             try {
               ethers.utils.getAddress(values.receipentAddress);
@@ -67,18 +75,23 @@ const TransferForm: React.FC<TransferFormProps> = ({ balance, signer, isConnecte
           return errors;
         }}
         onSubmit={async (values: Values, { setSubmitting, resetForm }) => {
-            try {
-              await signer?.sendTransaction({
-                to: values.receipentAddress,
-                value: ethers.utils.parseEther(new BigNumber(values.amount).toFixed()),
-              });
-              resetForm();
-              // TODO suceess tip
-            } catch (e) {
-              // TODO error tip
-            } finally {
-              setSubmitting(false);
-            }
+          try {
+            await signer?.sendTransaction({
+              to: values.receipentAddress,
+              value: ethers.utils.parseEther(
+                new BigNumber(values.amount).toFixed()
+              ),
+            });
+            resetForm();
+            enqueueSnackbar(
+              "The transaction is being processed, you can see the details in MetaMask",
+              { variant: "success" }
+            );
+          } catch (e: any) {
+            enqueueSnackbar(e.message, { variant: "error" });
+          } finally {
+            setSubmitting(false);
+          }
         }}
         validateOnChange={false}
         validateOnBlur
