@@ -33,7 +33,7 @@ interface TransferFormProps {
 const TransferForm: React.FC<TransferFormProps> = ({ balance, signer, isConnected }) => {
   return (
     <StyledFormContainer elevation={6}>
-      <Typography variant="h4" className="title">Transfer Ether</Typography>
+      <Typography variant="h5" className="title">Transfer Ether</Typography>
       <Formik
         initialValues={{
           receipentAddress: "",
