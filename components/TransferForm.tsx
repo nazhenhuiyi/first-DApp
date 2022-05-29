@@ -27,7 +27,7 @@ interface TransferFormProps {
   signer: JsonRpcSigner | null;
 }
 
-const TransferForm: React.FC<TransferFormProps> = ({ balance, signer }) => {
+const TransferForm: React.FC<TransferFormProps> = ({ balance, signer, isConnected }) => {
   return (
     <StyledFormContainer>
       <Formik
@@ -103,7 +103,7 @@ const TransferForm: React.FC<TransferFormProps> = ({ balance, signer }) => {
             <Button
               variant="contained"
               color="primary"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isConnected}
               onClick={submitForm}
               fullWidth
             >
